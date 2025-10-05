@@ -8,7 +8,6 @@ using MultiShop.Basket.WebAPI.Services;
 
 namespace MultiShop.Basket.WebAPI.Controllers
 {
-    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class BasketsController : ControllerBase
