@@ -12,7 +12,6 @@ using MultiShop.Catalog.Services.ProductImageServices;
 using MultiShop.Catalog.Services.ProductServices;
 using MultiShop.Catalog.Services.SpecialOfferServices;
 using MultiShop.Catalog.Settings;
-using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
 

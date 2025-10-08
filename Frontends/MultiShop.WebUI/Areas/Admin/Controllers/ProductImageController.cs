@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using MultiShop.DtoLayer.CatalogDtos.ProductImageDtos;
+using MultiShop.WebUI.Services.CatalogServices.ProductImageServices;
 using Newtonsoft.Json;
 using System.Text;
 
@@ -9,11 +10,11 @@ namespace MultiShop.WebUI.Areas.Admin.Controllers
     [Route("Admin/ProductImage")]
     public class ProductImageController : Controller
     {
-        private readonly IHttpClientFactory _httpClientFactory;
+        private readonly IProductImageService _productImageService;
 
-        public ProductImageController(IHttpClientFactory httpClientFactory)
+        public ProductImageController(IProductImageService productImageService)
         {
-            _httpClientFactory = httpClientFactory;
+            _productImageService = productImageService;
         }
 
         [Route("ProductImageDetail/{id}")]
@@ -21,30 +22,16 @@ namespace MultiShop.WebUI.Areas.Admin.Controllers
         public async Task<IActionResult> ProductImageDetail(string id)
         {
             ProductImageDetailViewBagList();
-            var client = _httpClientFactory.CreateClient();
-            var responseMessage = await client.GetAsync("https://localhost:7070/api/ProductImages/ProductImageByProductId/" + id);
-            if (responseMessage.IsSuccessStatusCode)
-            {
-                var jsonData = await responseMessage.Content.ReadAsStringAsync();
-                var values = JsonConvert.DeserializeObject<UpdateProductImageDto>(jsonData);
-                return View(values);
-            }
-            return View();
+            var value = await _productImageService.GetByIdProductImageAsync(id);
+            return View(value);
         }
 
         [Route("ProductImageDetail/{id}")]
         [HttpPost]
         public async Task<IActionResult> ProductImageDetail(UpdateProductImageDto updateProductImageDto)
         {
-            var client = _httpClientFactory.CreateClient();
-            var jsonData = JsonConvert.SerializeObject(updateProductImageDto);
-            StringContent stringContent = new StringContent(jsonData, Encoding.UTF8, "application/json");
-            var responseMessage = await client.PutAsync("https://localhost:7070/api/ProductImages", stringContent);
-            if (responseMessage.IsSuccessStatusCode)
-            {
-                return RedirectToAction("ProductListWithCategory", "Product", new { area = "Admin" });
-            }
-            return View();
+            await _productImageService.UpdateProductImageAsync(updateProductImageDto);
+            return RedirectToAction("ProductListWithCategory", "Product", new { area = "Admin" });
         }
 
         void ProductImageDetailViewBagList()

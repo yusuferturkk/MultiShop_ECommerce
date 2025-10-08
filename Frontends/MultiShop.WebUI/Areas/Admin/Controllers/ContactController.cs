@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using MultiShop.DtoLayer.CatalogDtos.ContactDtos;
-using Newtonsoft.Json;
-using System.Text;
+using MultiShop.WebUI.Services.CatalogServices.ContactServices;
 
 namespace MultiShop.WebUI.Areas.Admin.Controllers
 {
@@ -9,26 +8,19 @@ namespace MultiShop.WebUI.Areas.Admin.Controllers
     [Route("Admin/Contact")]
     public class ContactController : Controller
     {
-        private readonly IHttpClientFactory _httpClientFactory;
+        private readonly IContactService _contactService;
 
-        public ContactController(IHttpClientFactory httpClientFactory)
+        public ContactController(IContactService contactService)
         {
-            _httpClientFactory = httpClientFactory;
+            _contactService = contactService;
         }
 
         [Route("Index")]
         public async Task<IActionResult> Index()
         {
             ContactViewBagList();
-            var client = _httpClientFactory.CreateClient();
-            var responseMessage = await client.GetAsync("https://localhost:7070/api/Contacts");
-            if (responseMessage.IsSuccessStatusCode)
-            {
-                var jsonData = await responseMessage.Content.ReadAsStringAsync();
-                var values = JsonConvert.DeserializeObject<List<ResultContactDto>>(jsonData);
-                return View(values);
-            }
-            return View();
+            var values = await _contactService.GetAllContactAsync();
+            return View(values);
         }
 
         [Route("CreateContact")]
@@ -43,29 +35,15 @@ namespace MultiShop.WebUI.Areas.Admin.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateContact(CreateContactDto createContactDto)
         {
-            var client = _httpClientFactory.CreateClient();
-            var jsonData = JsonConvert.SerializeObject(createContactDto);
-            StringContent stringContent = new StringContent(jsonData, Encoding.UTF8, "application/json");
-            var responseMessage = await client.PostAsync("https://localhost:7070/api/Contacts", stringContent);
-
-            if (responseMessage.IsSuccessStatusCode)
-            {
-                return RedirectToAction("Index");
-            }
-            return View();
+            await _contactService.CreateContactAsync(createContactDto);
+            return RedirectToAction("Index", "Contact", new { area = "Admin" });
         }
 
         [Route("DeleteContact/{id}")]
         public async Task<IActionResult> DeleteContact(string id)
         {
-            var client = _httpClientFactory.CreateClient();
-            var responseMessage = await client.DeleteAsync("https://localhost:7070/api/Contacts/" + id);
-
-            if (responseMessage.IsSuccessStatusCode)
-            {
-                return RedirectToAction("Index");
-            }
-            return View();
+            await _contactService.DeleteContactAsync(id);
+            return RedirectToAction("Index", "Contact", new { area = "Admin" });
         }
 
         [Route("UpdateContact/{id}")]
@@ -73,30 +51,16 @@ namespace MultiShop.WebUI.Areas.Admin.Controllers
         public async Task<IActionResult> UpdateContact(string id)
         {
             ContactViewBagList();
-            var client = _httpClientFactory.CreateClient();
-            var responseMessage = await client.GetAsync("https://localhost:7070/api/Contacts/" + id);
-            if (responseMessage.IsSuccessStatusCode)
-            {
-                var jsonData = await responseMessage.Content.ReadAsStringAsync();
-                var value = JsonConvert.DeserializeObject<UpdateContactDto>(jsonData);
-                return View(value);
-            }
-            return View();
+            var value = await _contactService.GetByIdContactAsync(id);
+            return View(value);
         }
 
         [Route("UpdateContact/{id}")]
         [HttpPost]
         public async Task<IActionResult> UpdateContact(UpdateContactDto updateContactDto)
         {
-            var client = _httpClientFactory.CreateClient();
-            var jsonData = JsonConvert.SerializeObject(updateContactDto);
-            StringContent stringContent = new StringContent(jsonData, Encoding.UTF8, "application/json");
-            var responseMessage = await client.PutAsync("https://localhost:7070/api/Contacts", stringContent);
-            if (responseMessage.IsSuccessStatusCode)
-            {
-                return RedirectToAction("Index");
-            }
-            return View();
+            await _contactService.UpdateContactAsync(updateContactDto);
+            return RedirectToAction("Index", "Contact", new { area = "Admin" });
         }
 
         void ContactViewBagList()
