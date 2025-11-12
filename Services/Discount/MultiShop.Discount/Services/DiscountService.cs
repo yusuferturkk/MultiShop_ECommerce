@@ -64,6 +64,30 @@ namespace MultiShop.Discount.Services
             }
         }
 
+        public async Task<ResultCouponDto> GetCodeDetailByCodeAsync(string code)
+        {
+            string query = "Select * From Coupons Where CouponCode=@code";
+            var parameters = new DynamicParameters();
+            parameters.Add("@code", code);
+            using (var connection = _context.CreateConnection())
+            {
+                var value = await connection.QueryFirstOrDefaultAsync<ResultCouponDto>(query, parameters);
+                return value;
+            }
+        }
+
+        public int GetDiscountCouponCountRate(string code)
+        {
+            string query = "Select CouponRate From Coupons Where CouponCode=@code";
+            var parameters = new DynamicParameters();
+            parameters.Add("@code", code);
+            using (var connection = _context.CreateConnection())
+            {
+                var value = connection.QueryFirstOrDefault<int>(query, parameters);
+                return value;
+            }
+        }
+
         public async Task UpdateCouponAsync(UpdateCouponDto updateCouponDto)
         {
             string query = "UPDATE Coupons SET CouponCode = @code, CouponRate = @rate, CouponIsActive = @isActive, CouponValidDate = @validDate Where CouponId = @couponId";
