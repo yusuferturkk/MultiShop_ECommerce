@@ -23,9 +23,16 @@ namespace MultiShop.Order.Application.Features.Mediator.Handlers.AddressHandlers
         {
             var value = await _repository.GetByIdAsync(request.AddressId);
             value.UserId = request.UserId;
-            value.District = request.District;
+            value.FirstName = request.FirstName;
+            value.LastName = request.LastName;
+            value.Email = request.Email;
+            value.PhoneNumber = request.PhoneNumber;
+            value.Country = request.Country;
             value.City = request.City;
-            value.Detail = request.Detail;
+            value.District = request.District;
+            value.ZipCode = request.ZipCode;
+            value.AddressLine1 = request.AddressLine1;
+            value.AddressLine2 = request.AddressLine2;
             await _repository.UpdateAsync(value);
         }
     }

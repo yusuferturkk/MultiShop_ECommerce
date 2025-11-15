@@ -26,10 +26,17 @@ namespace MultiShop.Order.Application.Features.Mediator.Handlers.AddressHandlers
             return new GetAddressByIdQueryResult
             {
                 AddressId = value.AddressId,
-                City = value.City,
-                Detail = value.Detail,
-                District = value.District,
                 UserId = value.UserId,
+                FirstName = value.FirstName,
+                LastName = value.LastName,
+                Email = value.Email,
+                PhoneNumber = value.PhoneNumber,
+                Country = value.Country,
+                City = value.City,
+                District = value.District,
+                ZipCode = value.ZipCode,
+                AddressLine1 = value.AddressLine1,
+                AddressLine2 = value.AddressLine2,
             };
         }
     }

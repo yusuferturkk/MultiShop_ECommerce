@@ -23,10 +23,17 @@ namespace MultiShop.Order.Application.Features.Mediator.Handlers.AddressHandlers
         {
             await _repository.CreateAsync(new Address
             {
-                City = request.City,
-                Detail = request.Detail,
-                District = request.District,
                 UserId = request.UserId,
+                FirstName = request.FirstName,
+                LastName = request.LastName,
+                Email = request.Email,
+                PhoneNumber = request.PhoneNumber,
+                Country = request.Country,
+                City = request.City,
+                District = request.District,
+                ZipCode = request.ZipCode,
+                AddressLine1 = request.AddressLine1,
+                AddressLine2 = request.AddressLine2,
             });
         }
     }

@@ -1,0 +1,33 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+@await Component.InvokeAsync("UserLayoutHead")
+
+<body>
+    <div class="container-scroller d-flex">
+        
+        @await Component.InvokeAsync("UserLayoutSidebar")
+
+        <div class="container-fluid page-body-wrapper">
+
+            @await Component.InvokeAsync("UserLayoutHeader")
+
+            <div class="main-panel">
+                <div class="content-wrapper">
+                    <div class="row">
+                        
+                        @RenderBody()
+
+                    </div>
+                </div>
+                
+                @await Component.InvokeAsync("UserLayoutFooter")
+                
+            </div>
+        </div>
+    </div>
+    
+    @await Component.InvokeAsync("UserLayoutScript")
+
+</body>
+</html>
