@@ -9,6 +9,7 @@ using MultiShop.Order.Domain.Entities;
 
 namespace MultiShop.Order.WebAPI.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class AddressesController : ControllerBase
