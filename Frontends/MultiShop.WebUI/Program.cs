@@ -17,6 +17,7 @@ using MultiShop.WebUI.Services.CatalogServices.SpecialOfferServices;
 using MultiShop.WebUI.Services.CommentServices;
 using MultiShop.WebUI.Services.Concrete;
 using MultiShop.WebUI.Services.DiscountServices;
+using MultiShop.WebUI.Services.MessageServices;
 using MultiShop.WebUI.Services.OrderServices.OrderAddressService;
 using MultiShop.WebUI.Services.OrderServices.OrderAddressServices;
 using MultiShop.WebUI.Services.OrderServices.OrderingServices;
@@ -89,6 +90,11 @@ builder.Services.AddScoped<IOrderingService, OrderingService>();
 //{
 //    opt.BaseAddress = new Uri($"{values.OcelotUrl}/{values.Order.Path}");
 //}).AddHttpMessageHandler<ResourceOwnerPasswordTokenHandler>();
+
+builder.Services.AddHttpClient<IMessageService, MessageService>(opt =>
+{
+    opt.BaseAddress = new Uri($"{values.OcelotUrl}/{values.Message.Path}");
+}).AddHttpMessageHandler<ResourceOwnerPasswordTokenHandler>();
 
 builder.Services.AddHttpClient<IAboutService, AboutService>(opt =>
 {

@@ -1,36 +1,32 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.Authorization;
-using Microsoft.Extensions.Options;
-using MultiShop.Basket.WebAPI.LoginServices;
-using MultiShop.Basket.WebAPI.Services;
-using MultiShop.Basket.WebAPI.Settings;
+using Microsoft.EntityFrameworkCore;
+using MultiShop.Message.Context;
+using MultiShop.Message.Services;
 using System.IdentityModel.Tokens.Jwt;
+using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
 
 var requireAuthorizePolicy = new AuthorizationPolicyBuilder().RequireAuthenticatedUser().Build();
-JwtSecurityTokenHandler.DefaultMapInboundClaims = false; //Jwt sub deðerini elde edip mappingi kaldýrma.
+JwtSecurityTokenHandler.DefaultMapInboundClaims = false;
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(opt =>
 {
     opt.Authority = builder.Configuration["IdentityServerUrl"];
-    opt.Audience = "ResourceBasket";
+    opt.Audience = "ResourceMessage";
     opt.RequireHttpsMetadata = false;
 });
 
 // Add services to the container.
-builder.Services.AddScoped<IBasketService, BasketService>();
-builder.Services.AddScoped<ILoginService, LoginService>();
-builder.Services.AddHttpContextAccessor();
-builder.Services.Configure<RedisSettings>(builder.Configuration.GetSection("RedisSettings"));
-builder.Services.AddSingleton<RedisService>(sp =>
+builder.Services.AddEntityFrameworkNpgsql().AddDbContext<MessageContext>(opt =>
 {
-    var redisSettings = sp.GetRequiredService<IOptions<RedisSettings>>().Value;
-    var redis = new RedisService(redisSettings.Host, redisSettings.Port);
-    redis.Connect();
-    return redis;
+    opt.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
+
+builder.Services.AddAutoMapper(Assembly.GetExecutingAssembly());
+builder.Services.AddScoped<IUserMessageService, UserMessageService>();
 
 builder.Services.AddControllers(opt =>
 {
