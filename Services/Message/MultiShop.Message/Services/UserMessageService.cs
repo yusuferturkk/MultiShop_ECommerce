@@ -55,6 +55,12 @@ namespace MultiShop.Message.Services
             return _mapper.Map<List<ResultSendboxMessageDto>>(values);
         }
 
+        public Task<int> GetTotalMessageCount()
+        {
+            var values = _messageContext.UserMessages.CountAsync();
+            return values;
+        }
+
         public void UpdateMessage(UpdateMessageDto updateMessageDto)
         {
             _messageContext.UserMessages.Update(_mapper.Map<UserMessage>(updateMessageDto));

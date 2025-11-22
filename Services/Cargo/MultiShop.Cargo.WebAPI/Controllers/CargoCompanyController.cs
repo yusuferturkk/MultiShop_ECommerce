@@ -45,12 +45,9 @@ namespace MultiShop.Cargo.WebAPI.Controllers
         [HttpPut]
         public IActionResult UpdateCargoCompany(UpdateCargoCompanyDto dto)
         {
-            CargoCompany cargoCompany = new CargoCompany
-            {
-                CargoCompanyName = dto.CargoCompanyName,
-            };
-
-            _service.TUpdate(cargoCompany);
+            var value = _service.TGetById(dto.CargoCompanyId);
+            value.CargoCompanyName = dto.CargoCompanyName;
+            _service.TUpdate(value);
             return Ok("Kargo firması güncelleme işlemi başarılı.");
         }
 

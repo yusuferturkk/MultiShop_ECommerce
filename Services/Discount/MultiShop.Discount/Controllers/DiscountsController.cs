@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using MultiShop.Discount.Dtos.CouponDtos;
 using MultiShop.Discount.Services;
+using System.Threading.Tasks;
 
 namespace MultiShop.Discount.Controllers
 {
@@ -42,6 +43,13 @@ namespace MultiShop.Discount.Controllers
         public IActionResult GetCouponCountRate(string code)
         {
             var value = _discountService.GetDiscountCouponCountRate(code);
+            return Ok(value);
+        }
+
+        [HttpGet("GetDiscountCouponCount")]
+        public async Task<IActionResult> GetDiscountCouponCount()
+        {
+            var value = await _discountService.GetDiscountCouponCount();
             return Ok(value);
         }
 

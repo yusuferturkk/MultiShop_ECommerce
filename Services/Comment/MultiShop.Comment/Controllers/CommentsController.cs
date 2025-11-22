@@ -1,8 +1,10 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using MultiShop.Comment.Context;
 using MultiShop.Comment.Entities;
+using System.Threading.Tasks;
 
 namespace MultiShop.Comment.Controllers
 {
@@ -36,6 +38,27 @@ namespace MultiShop.Comment.Controllers
         public IActionResult CommentListByProductId(string id)
         {
             var value = _context.UserComments.Where(x => x.ProductId == id).ToList();
+            return Ok(value);
+        }
+
+        [HttpGet("GetActiveCommentCount")]
+        public async Task<IActionResult> GetActiveCommentCount()
+        {
+            var value = await _context.UserComments.Where(x => x.Status == true).CountAsync();
+            return Ok(value);
+        }
+
+        [HttpGet("GetPassiveCommentCount")]
+        public async Task<IActionResult> GetPassiveCommentCount()
+        {
+            var value = await _context.UserComments.Where(x => x.Status == false).CountAsync();
+            return Ok(value);
+        }
+
+        [HttpGet("GetTotalCommentCount")]
+        public async Task<IActionResult> GetTotalCommentCount()
+        {
+            var value = await _context.UserComments.CountAsync();
             return Ok(value);
         }
 
