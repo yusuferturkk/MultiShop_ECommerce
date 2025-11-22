@@ -1,12 +1,7 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.Authorization;
-using MultiShop.Cargo.BusinessLayer.Abstract;
-using MultiShop.Cargo.BusinessLayer.Concrete;
-using MultiShop.Cargo.DataAccessLayer.Abstract;
-using MultiShop.Cargo.DataAccessLayer.Concrete;
-using MultiShop.Cargo.DataAccessLayer.EntityFramework;
-using MultiShop.Cargo.DataAccessLayer.Repositories;
+using MultiShop.Cargo.WebAPI.Extensions;
 using System.IdentityModel.Tokens.Jwt;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -14,31 +9,8 @@ var builder = WebApplication.CreateBuilder(args);
 var requireAuthorizePolicy = new AuthorizationPolicyBuilder().RequireAuthenticatedUser().Build();
 JwtSecurityTokenHandler.DefaultMapInboundClaims = false; //Jwt sub deðerini elde edip mappingi kaldýrma.
 
-// Add services to the container.
-builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(opt =>
-{
-    opt.Authority = builder.Configuration["IdentityServerUrl"];
-    opt.Audience = "ResourceCargo";
-    opt.RequireHttpsMetadata = false;
-});
-
-// Add services to the container.
-
-builder.Services.AddDbContext<CargoContext>();
-
-builder.Services.AddScoped<ICargoCustomerService, CargoCustomerManager>();
-builder.Services.AddScoped<ICargoCustomerDal, EfCargoCustomerDal>();
-
-builder.Services.AddScoped<ICargoDetailService, CargoDetailManager>();
-builder.Services.AddScoped<ICargoDetailDal, EfCargoDetailDal>();
-
-builder.Services.AddScoped<ICargoOperationService, CargoOperationManager>();
-builder.Services.AddScoped<ICargoOperationDal, EfCargoOperationDal>();
-
-builder.Services.AddScoped<ICargoCompanyService, CargoCompanyManager>();
-builder.Services.AddScoped<ICargoCompanyDal, EfCargoCompanyDal>();
-
-builder.Services.AddScoped(typeof(IGenericDal<>), typeof(GenericRepository<>));
+// Service registration
+builder.Services.AddCargoServices(builder.Configuration);
 
 builder.Services.AddControllers(opt =>
 {

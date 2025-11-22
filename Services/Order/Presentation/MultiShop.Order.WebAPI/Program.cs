@@ -5,6 +5,7 @@ using MultiShop.Order.Application.Interfaces;
 using MultiShop.Order.Application.Services;
 using MultiShop.Order.Persistence.Context;
 using MultiShop.Order.Persistence.Repositories;
+using MultiShop.Order.WebAPI.Extensions;
 using System.IdentityModel.Tokens.Jwt;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -12,18 +13,8 @@ var builder = WebApplication.CreateBuilder(args);
 //var requireAuthorizePolicy = new AuthorizationPolicyBuilder().RequireAuthenticatedUser().Build();
 //JwtSecurityTokenHandler.DefaultMapInboundClaims = false; //Jwt sub deðerini elde edip mappingi kaldýrma.
 
-//builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(opt =>
-//{
-//    opt.Authority = builder.Configuration["IdentityServerUrl"];
-//    opt.Audience = "ResourceOrder";
-//    opt.RequireHttpsMetadata = false;
-//});
-
-// Add services to the container.
-builder.Services.AddDbContext<OrderContext>();
-builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
-builder.Services.AddScoped(typeof(IOrderingRepository), typeof(OrderingRepository));
-builder.Services.AddApplicationService(builder.Configuration);
+// Service registration
+builder.Services.AddOrderServices(builder.Configuration);
 
 builder.Services.AddControllers();
 //    opt =>
